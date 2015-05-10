@@ -4,5 +4,7 @@ public class MediaType {
 	
 	public final static String HANDICAPONE_API_PARTIDO = "application/vnd.handicapone.api.partido+json";
 	public final static String HANDICAPONE_API_PARTIDO_COLLECTION = "application/vnd.handicapone.api.partido.collection+json";
+	public final static String HANDICAPONE_API_USER = "application/vnd.handicapone.api.user+json";
 
+	
 }

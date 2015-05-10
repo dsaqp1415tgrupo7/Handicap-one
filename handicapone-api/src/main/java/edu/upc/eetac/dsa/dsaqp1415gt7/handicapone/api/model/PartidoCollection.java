@@ -9,7 +9,7 @@ import javax.ws.rs.core.Link;
 public class PartidoCollection {
 	
 	private List<Link> links;
-	private List<Partido> partido;
+	private List<Partido> partidos;//He cambiado partidos por partido, igual hay que cambiar algo mas
 	private long newestTimestamp;
 	private long oldestTimestamp;
 	private String aaa;
@@ -18,7 +18,7 @@ public class PartidoCollection {
 	
 	public PartidoCollection() {
 		super();
-		partido = new ArrayList<>();
+		partidos = new ArrayList<>();
 	}
 	
 	public List<Link> getLinks() {
@@ -28,10 +28,10 @@ public class PartidoCollection {
 		this.links = links;
 	}
 	public List<Partido> getPartidos() {
-		return partido;
+		return partidos;
 	}
 	public void setPartidos(List<Partido> partidos) {
-		this.partido = partidos;
+		this.partidos = partidos;
 	}
 	public long getNewestTimestamp() {
 		return newestTimestamp;
@@ -51,8 +51,9 @@ public class PartidoCollection {
 	public void setAaa(String aaa) {
 		this.aaa = aaa;
 	}
-	
-	
+	public void addPartido(Partido partido) {
+		partidos.add(partido);
+	}
 	
 
 }

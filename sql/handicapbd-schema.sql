@@ -1,3 +1,5 @@
+
+
 DROP DATABASE IF EXISTS handicapbd ;
 CREATE DATABASE handicapbd;
 USE handicapbd;
@@ -13,11 +15,13 @@ password varchar(40)
 
 CREATE TABLE PARTIDOS (
 idpartido INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-/*equipos varchar(40),*/
+username varchar(40),
 local varchar(40),
 visitante varchar(40),
 fechacierre datetime,
-fechapartido datetime
+fechapartido TIMESTAMP,
+last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
+creation_timestamp datetime not null default current_timestamp
 )ENGINE=InnoDB;
 
 CREATE TABLE PICKS (
@@ -28,6 +32,8 @@ resultado INTEGER,
 seguidores INTEGER,
 cuota INTEGER NOT NULL,
 fechaedicion datetime,
+last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
+creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (iduser) REFERENCES USERS(iduser)
 )ENGINE=InnoDB;
 
@@ -36,6 +42,8 @@ idcomment INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 iduser INTEGER NOT NULL,
 text varchar(500),
 fechaedicion datetime,
+last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
+creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (iduser) REFERENCES USERS(iduser)
 )ENGINE=InnoDB;
 
