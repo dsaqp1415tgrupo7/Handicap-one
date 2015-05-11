@@ -47,11 +47,19 @@ public class PartidoResource {
 	private String INSERT_PARTIDO_QUERY = "insert into partidos (local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?)";
 	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
 	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
-	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
+	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now()) order by creation_timestamp desc limit ?";
 	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
 	 
 	
-
+/*
+ * 	private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
+	private String INSERT_PARTIDO_QUERY = "insert into partidos (local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?)";
+	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
+	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
+	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now()) order by creation_timestamp desc limit ?";
+	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
+	 
+ */
 	
 	
 	@GET

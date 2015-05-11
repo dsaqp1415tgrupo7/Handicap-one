@@ -21,7 +21,8 @@ visitante varchar(40),
 fechacierre datetime,
 fechapartido TIMESTAMP,
 last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
-creation_timestamp datetime not null default current_timestamp
+creation_timestamp datetime not null default current_timestamp,
+FOREIGN KEY (username) REFERENCES USERS(username)
 )ENGINE=InnoDB;
 
 CREATE TABLE PICKS (
@@ -35,6 +36,9 @@ fechaedicion datetime,
 last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
 creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (iduser) REFERENCES USERS(iduser)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+	
 )ENGINE=InnoDB;
 
 CREATE TABLE COMMENTS (
@@ -59,6 +63,11 @@ CREATE TABLE REL_PARTIDOPICK (
 idrelacion INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 idpartido INTEGER NOT NULL,
 idpick INTEGER NOT NULL,
-FOREIGN KEY (idpartido) REFERENCES PARTIDOS(idpartido),
+FOREIGN KEY (idpartido) REFERENCES PARTIDOS(idpartido)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
 FOREIGN KEY (idpick) REFERENCES PICKS(idpick)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 )ENGINE=InnoDB;
+
