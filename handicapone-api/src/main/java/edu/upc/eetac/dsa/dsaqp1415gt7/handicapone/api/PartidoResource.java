@@ -43,15 +43,18 @@ public class PartidoResource {
 	private SecurityContext security;
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
 	
-	private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
+	private String GET_PARTIDO_BY_ID_QUERY = "select p.* from partidos p where p.idpartido=?";
 	private String INSERT_PARTIDO_QUERY = "insert into partidos (username, local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?, ?)";
 	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
 	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
-	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
-	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
-	 
+	private String GET_PARTIDOS_QUERY = "select p.* from partidos p where p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
+	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.* from partidos p where p.creation_timestamp > ? order by creation_timestamp desc";
+
 	
 	//private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
+	//private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
+	//private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
+	//	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
 
 	
 	
@@ -60,6 +63,7 @@ public class PartidoResource {
 	public PartidoCollection getPartidos(@QueryParam("length") int length,
 			@QueryParam("before") long before, @QueryParam("after") long after) {
 		PartidoCollection partidos = new PartidoCollection();
+		
 	 
 		Connection conn = null;
 		try {
@@ -77,12 +81,13 @@ public class PartidoResource {
 					.prepareStatement(GET_PARTIDOS_QUERY);
 			if (updateFromLast) {
 				stmt.setTimestamp(1, new Timestamp(after));
+				
 			} else {
 				if (before > 0)
 					stmt.setTimestamp(1, new Timestamp(before));
 				else
 					stmt.setTimestamp(1, null);
-					length = (length <= 0) ? 10 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
+					length = (length <= 0) ? 20 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
 					stmt.setInt(2, length);
 			}
 			ResultSet rs = stmt.executeQuery();
