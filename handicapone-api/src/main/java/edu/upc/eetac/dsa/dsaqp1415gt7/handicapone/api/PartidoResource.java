@@ -46,11 +46,12 @@ public class PartidoResource {
 	private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
 	private String INSERT_PARTIDO_QUERY = "insert into partidos (username, local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?, ?)";
 	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
-	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
+	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
 	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
 	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
 	 
 	
+	//private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
 
 	
 	
@@ -236,49 +237,142 @@ public class PartidoResource {
 			}
 		}
 	}
-	@PUT
-	@Path("/{idpartido}")
-	@Consumes(MediaType.HANDICAPONE_API_PARTIDO)
-	@Produces(MediaType.HANDICAPONE_API_PARTIDO)
-	public Partido updatePartido(@PathParam("idpartido") String idpartido, Partido partido) {
-		validateUser(idpartido);
-		validateUpdatePartido(partido);
-
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	 
-		PreparedStatement stmt = null;
-		try {
-			stmt = conn.prepareStatement(UPDATE_PARTIDO_QUERY);
-			stmt.setString(1, partido.getLocal());
-			stmt.setString(2, partido.getVisitante());
-			stmt.setInt(3, Integer.valueOf(idpartido));
-	 
-			int rows = stmt.executeUpdate();
-			if (rows == 1)
-				partido = getPartidoFromDatabase(idpartido);
-			else {
-				throw new NotFoundException("There's no sting with stingid="
-						+ idpartido);
-			}
-	 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
+//	@PUT
+//	@Path("/{idpartido}")
+//	@Consumes(MediaType.HANDICAPONE_API_PARTIDO)
+//	@Produces(MediaType.HANDICAPONE_API_PARTIDO)
+//	public Partido updatePartido(@PathParam("idpartido") String idpartido, Partido partido) {
+//		validateUser(idpartido);
+//		validateUpdatePartido(partido);
+//
+//		Connection conn = null;
+//		try {
+//			conn = ds.getConnection();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	 
+//		PreparedStatement stmt = null;
+//		try {
+//			stmt = conn.prepareStatement(UPDATE_PARTIDO_QUERY);
+//			stmt.setString(1, partido.getLocal());
+//			stmt.setString(2, partido.getVisitante());
+//			//stmt.setInt(3, Integer.valueOf(idpartido));
+//			
+////			stmt.setString(1, partido.getLocal());
+////			stmt.setString(2, partido.getVisitante());
+////			stmt.setString(3, partido.getFechacierre());
+////			stmt.setString(4, partido.getFechapartido());
+////			stmt.setInt(5, Integer.valueOf(idpartido));
+//	 
+//			int rows = stmt.executeUpdate();
+//			
+//			if (rows == 0){
+//				throw new NotFoundException("No hay una cancion llamada " + idpartido);
+//				}
+//			else {
+//				System.out.println("canción actualizada");
+//				
+//			}
+////			if (rows == 1)
+////				partido = getPartidoFromDatabase(idpartido);
+////			else {
+////				throw new NotFoundException("There's no sting with stingid="
+////						+ idpartido);
+////			}
+//	 
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				if (stmt != null)
+//					stmt.close();
+//				conn.close();
+//			} catch (SQLException e) {
+//			}
+//		}
+//	 
+//	return partido;
+//	}
+////////////////////////
+	
+	
+	 @PUT
+		@Path("/{idpartido}")
+		@Consumes(MediaType.HANDICAPONE_API_PARTIDO)
+		@Produces(MediaType.HANDICAPONE_API_PARTIDO)
+		public Partido updatePartido(@PathParam("idpartido") String idpartido, Partido partido) {	
+			
+			// solo puede el registrado
+			//if (!security.isUserInRole("registered"))
+			//	throw new ForbiddenException("You are not allowed to delete a book");
+			
+			//Falta por añadir que el usuario que edite la cancion sea el creador
+			// Felipe solo edita lo de Felipe
+			
+			Connection conn = null;
 			try {
-				if (stmt != null)
-					stmt.close();
-				conn.close();
+				conn = ds.getConnection();
 			} catch (SQLException e) {
+				throw new ServerErrorException("Could not connect to the database",
+						Response.Status.SERVICE_UNAVAILABLE);
 			}
+
+			PreparedStatement stmt = null;
+			try {
+				
+					//if (song_name != null) {
+						stmt = conn.prepareStatement(UPDATE_PARTIDO_QUERY);
+						stmt.setString(1, partido.getLocal());
+						stmt.setString(2, partido.getVisitante());
+						stmt.setString(3, idpartido);
+						//stmt.setString(1, song_name);
+						//stmt.setInt(2,Integer.valueOf(songid));
+						
+						
+						int rows = stmt.executeUpdate(); // para añadir con los datos de la BBDD
+						System.out.println("Query salida: " + stmt);
+						
+						if (rows == 0){
+							throw new NotFoundException("No hay una cancion llamada " + idpartido);
+							}
+						else {
+							System.out.println("canción actualizada");
+							
+						}
+			
+					//}
+					
+										
+				// si todo va bien...
+
+//Hace el put pero no saca la lista, falta por acabar					
+				
+				//song = getSongFromDatabase(song_name);
+
+				
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (stmt != null)
+						stmt.close();
+					conn.close();
+				} catch (SQLException e) {
+					throw new ServerErrorException(e.getMessage(),
+							Response.Status.INTERNAL_SERVER_ERROR);
+				}
+			}
+			return partido;
+
 		}
-	 
-	return partido;
-	}
+	
+	
+	
+	
+	
+	////////////////////
 	private void validatePartido(Partido partido) {//da errores si se sobrepasan los caracteres de subject y 
 		if (partido.getLocal() == null)
 			throw new BadRequestException("The local team can't be null.");
