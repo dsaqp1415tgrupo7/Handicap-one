@@ -44,22 +44,14 @@ public class PartidoResource {
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
 	
 	private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
-	private String INSERT_PARTIDO_QUERY = "insert into partidos (local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?)";
+	private String INSERT_PARTIDO_QUERY = "insert into partidos (username, local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?, ?)";
 	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
 	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
-	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now()) order by creation_timestamp desc limit ?";
+	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now())  order by creation_timestamp desc limit ?";
 	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
 	 
 	
-/*
- * 	private String GET_PARTIDO_BY_ID_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.idpartido=?";
-	private String INSERT_PARTIDO_QUERY = "insert into partidos (local, visitante, fechacierre, fechapartido) values (?, ?, ?, ?)";
-	private String DELETE_PARTIDO_QUERY = "delete from partidos where idpartido=?";
-	private String UPDATE_PARTIDO_QUERY = "update partidos set local=ifnull(?, local), visitante=ifnull(?, visitante), fechacierra=ifnull(?, fechacierre), fechapartido=ifnull(?, fechapartido) where idpartido=?";//si el valor del param q pasas es nulo, el valor q añades en la bbdd es el q habia, subject, y si no el parametro.
-	private String GET_PARTIDOS_QUERY = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp < ifnull(?, now()) order by creation_timestamp desc limit ?";
-	private String GET_PARTIDOS_QUERY_FROM_LAST = "select p.*, u.name from partidos p, users u where u.username=p.username and p.creation_timestamp > ? order by creation_timestamp desc";
-	 
- */
+
 	
 	
 	@GET
@@ -89,8 +81,8 @@ public class PartidoResource {
 					stmt.setTimestamp(1, new Timestamp(before));
 				else
 					stmt.setTimestamp(1, null);
-				length = (length <= 0) ? 10 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
-				stmt.setInt(2, length);
+					length = (length <= 0) ? 10 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
+					stmt.setInt(2, length);
 			}
 			ResultSet rs = stmt.executeQuery();
 			boolean first = true;
@@ -101,6 +93,8 @@ public class PartidoResource {
 				partido.setUsername(rs.getString("username"));
 				partido.setLocal(rs.getString("local"));
 				partido.setVisitante(rs.getString("visitante"));
+				partido.setFechacierre(rs.getString("fechacierre"));
+				partido.setFechapartido(rs.getString("fechapartido"));
 				partido.setLastModified(rs.getTimestamp("last_modified").getTime());
 				partido.setCreationTimestamp(rs.getTimestamp("creation_timestamp").getTime()); 
 				oldestTimestamp = rs.getTimestamp("creation_timestamp").getTime();
@@ -138,7 +132,7 @@ public class PartidoResource {
 	@GET
 	@Path("/{idpartido}")
 	@Produces(MediaType.HANDICAPONE_API_PARTIDO)
-	public Response getSting(@PathParam("idpartido") String idpartido,
+	public Response getPartido(@PathParam("idpartido") String idpartido,
 			@Context Request request) {
 		// Create CacheControl
 		CacheControl cc = new CacheControl();
@@ -183,15 +177,17 @@ public class PartidoResource {
 			stmt = conn.prepareStatement(INSERT_PARTIDO_QUERY,
 					Statement.RETURN_GENERATED_KEYS);//return devuelve el primary key, este sera el sitingId
 	 
-			//stmt.setString(1, sting.getUsername());
-			stmt.setString(1, security.getUserPrincipal().getName());//hace q el usuario q crea sea el correcto y no se usurpen 
+			stmt.setString(1, partido.getUsername());
+			//stmt.setString(1, security.getUserPrincipal().getName());//hace q el usuario q crea sea el correcto y no se usurpen 
 
 			stmt.setString(2, partido.getLocal());
 			stmt.setString(3, partido.getVisitante());
+			stmt.setString(4, partido.getFechacierre());
+			stmt.setString(5, partido.getFechapartido());
 			stmt.executeUpdate();
-			ResultSet rs = stmt.getGeneratedKeys();//copiamos aqui el stringID
+			ResultSet rs = stmt.getGeneratedKeys();//copiamos aqui el idpartido
 			if (rs.next()) {
-				int idpartido = rs.getInt(1);//lo grabamo en stringID
+				int idpartido = rs.getInt(1);//lo grabamo en idpartido
 	 
 				partido = getPartidoFromDatabase(Integer.toString(idpartido));
 			} else {
@@ -212,7 +208,7 @@ public class PartidoResource {
 	}
 	@DELETE
 	@Path("/{idpartido}")
-	public void deleteSting(@PathParam("idpartido") String idpartido) {
+	public void deletePartido(@PathParam("idpartido") String idpartido) {
 		//validateUser(idpartido);
 		Connection conn = null;
 		try {
@@ -320,7 +316,8 @@ public class PartidoResource {
 			if (rs.next()) {
 				partido.setIdpartido(rs.getInt("idpartido"));
 				partido.setUsername(rs.getString("username"));
-				partido.setFechapartido(rs.getLong("fechapartido"));
+				partido.setFechacierre(rs.getString("fechacierre"));
+				partido.setFechapartido(rs.getString("fechapartido"));
 				partido.setLocal(rs.getString("local"));
 				partido.setVisitante(rs.getString("visitante"));
 				partido.setLastModified(rs.getTimestamp("last_modified")

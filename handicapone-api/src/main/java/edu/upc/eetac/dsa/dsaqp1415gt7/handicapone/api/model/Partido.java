@@ -27,8 +27,8 @@ public class Partido {
 	private String username;
 	private String local;
 	private String visitante;
-	private long fechacierre;
-	private long fechapartido;
+	private String fechacierre;
+	private String fechapartido;
 	private long lastModified;
 	private long creationTimestamp;
 	
@@ -74,16 +74,16 @@ public class Partido {
 	public void setVisitante(String visitante) {
 		this.visitante = visitante;
 	}
-	public long getFechacierre() {
+	public String getFechacierre() {
 		return fechacierre;
 	}
-	public void setFechacierre(long fechacierre) {
+	public void setFechacierre(String fechacierre) {
 		this.fechacierre = fechacierre;
 	}
-	public long getFechapartido() {
+	public String getFechapartido() {
 		return fechapartido;
 	}
-	public void setFechapartido(long fechapartido) {
+	public void setFechapartido(String fechapartido) {
 		this.fechapartido = fechapartido;
 	}
 

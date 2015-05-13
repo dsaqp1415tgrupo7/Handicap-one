@@ -18,8 +18,8 @@ idpartido INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 username varchar(40),
 local varchar(40),
 visitante varchar(40),
-fechacierre datetime,
-fechapartido TIMESTAMP,
+fechacierre varchar(40),
+fechapartido varchar(40),
 last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
 creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (username) REFERENCES USERS(username)
@@ -38,7 +38,6 @@ creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (iduser) REFERENCES USERS(iduser)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
-	
 )ENGINE=InnoDB;
 
 CREATE TABLE COMMENTS (
