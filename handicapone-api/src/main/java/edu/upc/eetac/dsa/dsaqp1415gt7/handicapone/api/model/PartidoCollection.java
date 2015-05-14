@@ -5,9 +5,20 @@ import java.util.List;
 
 import javax.ws.rs.core.Link;
 
+import org.glassfish.jersey.linking.Binding;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
+import org.glassfish.jersey.linking.InjectLink.Style;
+
+import edu.upc.eetac.dsa.dsaqp1415gt7.handicapone.api.MediaType;
+import edu.upc.eetac.dsa.dsaqp1415gt7.handicapone.api.PartidoResource;
+
 
 public class PartidoCollection {
-	
+	@InjectLinks({
+		@InjectLink(resource = PartidoResource.class, style = Style.ABSOLUTE, rel = "create-partido", title = "Create partido", type = MediaType.HANDICAPONE_API_PARTIDO),
+		@InjectLink(value = "/partido?before={before}", style = Style.ABSOLUTE, rel = "previous", title = "Previous partido", type = MediaType.HANDICAPONE_API_PARTIDO_COLLECTION, bindings = { @Binding(name = "before", value = "${instance.oldestTimestamp}") }),
+		@InjectLink(value = "/partido?after={after}", style = Style.ABSOLUTE, rel = "current", title = "Newest partido", type = MediaType.HANDICAPONE_API_PARTIDO_COLLECTION, bindings = { @Binding(name = "after", value = "${instance.newestTimestamp}") }) })
 	private List<Link> links;
 	private List<Partido> partidos;//He cambiado partidos por partido, igual hay que cambiar algo mas
 	private long newestTimestamp;

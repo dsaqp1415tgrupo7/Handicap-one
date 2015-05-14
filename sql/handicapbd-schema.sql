@@ -23,6 +23,8 @@ fechapartido varchar(40),
 last_modified timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
 creation_timestamp datetime not null default current_timestamp,
 FOREIGN KEY (username) REFERENCES USERS(username)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 )ENGINE=InnoDB;
 
 CREATE TABLE PICKS (

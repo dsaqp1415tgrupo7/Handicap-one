@@ -87,7 +87,7 @@ public class PartidoResource {
 					stmt.setTimestamp(1, new Timestamp(before));
 				else
 					stmt.setTimestamp(1, null);
-					length = (length <= 0) ? 20 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
+					length = (length <= 0) ? 5 : length;//si length es negativo o 0 el valor es 5 sino el que te pasen.
 					stmt.setInt(2, length);
 			}
 			ResultSet rs = stmt.executeQuery();

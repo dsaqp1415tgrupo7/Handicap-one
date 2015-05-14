@@ -19,7 +19,7 @@ public class Partido {
 //	})
 	
 	@InjectLinks({
-		@InjectLink(resource = PartidoResource.class, style = Style.ABSOLUTE, rel = "partidos", title = "Latest partidos", type = MediaType.HANDICAPONE_API_PARTIDO_COLLECTION),
+		@InjectLink(resource = PartidoResource.class, style = Style.ABSOLUTE, rel = "partido", title = "Latest partidos", type = MediaType.HANDICAPONE_API_PARTIDO_COLLECTION),
 		@InjectLink(resource = PartidoResource.class, style = Style.ABSOLUTE, rel = "self edit", title = "Partido", type = MediaType.HANDICAPONE_API_PARTIDO, method = "getPartido", bindings = @Binding(name = "idpartido", value = "${instance.idpartido}")) })
 	
 	private List<Link> links;
