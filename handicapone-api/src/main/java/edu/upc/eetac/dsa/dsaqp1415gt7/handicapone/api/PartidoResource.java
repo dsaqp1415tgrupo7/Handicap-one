@@ -37,7 +37,7 @@ import edu.upc.eetac.dsa.dsaqp1415gt7.handicapone.api.model.PartidoCollection;
 
 
 
-@Path("/partido")
+@Path("/partidos")
 public class PartidoResource {
 	@Context
 	private SecurityContext security;
